@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flink-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flink
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: flink
+        component: worker
+    spec:
+      containers:
+        - name: worker
+          image: flink:1.14
+          args:
+            - taskmanager
+          ports:
+            - containerPort: 6121
+              name: data
+            - containerPort: 6122
+              name: rpc
+            - containerPort: 6125
+              name: query
+          env:
+            - name: JOB_MANAGER_RPC_ADDRESS
+              value: flink-master
